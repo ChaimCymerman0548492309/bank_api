@@ -139,7 +139,77 @@ def get_account_balance(account_id):
         "account_id": account["id"],
         "balance": account["balance"]
     })
+# Add these routes before the health check endpoint
 
+@app.route('/transfers', methods=['POST'])
+@token_required
+def create_transfer():
+    """Transfer money between two accounts"""
+    try:
+        data = request.get_json()
+        from_account_id = int(data.get('from_account_id'))
+        to_account_id = int(data.get('to_account_id'))
+        amount = float(data.get('amount'))
+        
+        if amount <= 0:
+            return jsonify({"error": "Transfer amount must be positive"}), 400
+        
+        # Check if accounts exist
+        from_account = db.get_account(from_account_id)
+        to_account = db.get_account(to_account_id)
+        
+        if not from_account or not to_account:
+            return jsonify({"error": "One or both accounts not found"}), 404
+        
+        # Verify user owns the from_account
+        if from_account['user_id'] != request.user_id:
+            return jsonify({"error": "Access denied"}), 403
+        
+        # Check sufficient balance
+        if from_account["balance"] < amount:
+            return jsonify({"error": "Insufficient funds"}), 400
+        
+        # Execute transfer
+        new_from_balance = from_account["balance"] - amount
+        new_to_balance = to_account["balance"] + amount
+        
+        if not db.update_account_balance(from_account_id, new_from_balance):
+            return jsonify({"error": "Failed to update sender account"}), 500
+        
+        if not db.update_account_balance(to_account_id, new_to_balance):
+            # In case of failure - return money to sender account
+            db.update_account_balance(from_account_id, from_account["balance"])
+            return jsonify({"error": "Failed to update recipient account"}), 500
+        
+        # Record the transfer
+        transfer = db.create_transfer(from_account_id, to_account_id, amount)
+        
+        return jsonify({
+            "message": "Transfer completed successfully",
+            "transfer_id": transfer["id"],
+            "new_balance": new_from_balance
+        }), 201
+    
+    except ValueError:
+        return jsonify({"error": "Invalid account ID or amount"}), 400
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/accounts/<int:account_id>/transfers', methods=['GET'])
+@token_required
+def get_transfer_history(account_id):
+    """Returns transfer history for an account"""
+    account = db.get_account(account_id)
+    if not account:
+        return jsonify({"error": "Account not found"}), 404
+    
+    # Verify user owns the account
+    if account['user_id'] != request.user_id:
+        return jsonify({"error": "Access denied"}), 403
+    
+    transfers = db.get_account_transfers(account_id)
+    return jsonify(transfers)
+    
 # Health check (public)
 @app.route('/health', methods=['GET'])
 def health_check():

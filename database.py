@@ -5,9 +5,9 @@ from datetime import datetime
 class JSONDatabase:
     def __init__(self):
         self.files = {
-            'users': 'users.json',
-            'accounts': 'accounts.json', 
-            'transfers': 'transfers.json'
+            'users': 'data/users.json',
+            'accounts': 'data/accounts.json', 
+            'transfers': 'data/transfers.json'
         }
         self._init_files()
     
