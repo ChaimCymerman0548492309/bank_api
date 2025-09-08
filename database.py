@@ -147,5 +147,31 @@ class JSONDatabase:
                 (t.get('from_account_id') == account_id or t.get('to_account_id') == account_id)]
 
     def get_all_transfers(self):
+
         """Get complete transfer history"""
         return self._read_file(self.files['transfers'])
+
+
+    def transfer_update_balances(self, from_account_id, new_from_balance, to_account_id, new_to_balance):
+        """
+        Update balances for two accounts in a single operation (atomic update).
+        Ensures that both accounts are updated together, preventing inconsistent states.
+        """
+        accounts = self._read_file(self.files['accounts'])
+        updated_from = False
+        updated_to = False
+
+        for account in accounts:
+            if isinstance(account, dict):
+                if account.get('id') == from_account_id:
+                    account['balance'] = new_from_balance
+                    updated_from = True
+                elif account.get('id') == to_account_id:
+                    account['balance'] = new_to_balance
+                    updated_to = True
+
+        if updated_from and updated_to:
+            self._write_file(self.files['accounts'], accounts)
+            return True
+        else:
+            return False

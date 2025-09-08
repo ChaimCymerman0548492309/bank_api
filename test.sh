@@ -17,8 +17,8 @@ curl -X POST http://127.0.0.1:5000/login \
 
 
 echo "---- Deposit 200 ----"
-curl -s -X POST http://127.0.0.1:5000/accounts/$ACCOUNT_ID/deposit \
-     -H "Authorization: Bearer $TOKEN" \
+curl -s -X POST http://127.0.0.1:5000/accounts/1/deposit \
+     -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6InRlc3R1c2VyIiwiZXhwIjoxNzU3NDMwNDU1fQ.d2nqmcrozIywWm0y7Tt3zSaUep_cR8rNRu1oBf_axDA" \
      -H "Content-Type: application/json" \
      -d '{"amount": 200}'
 
@@ -50,7 +50,7 @@ echo ""
 echo "=== 3. Money Transfer (between my accounts) ==="
 curl -X POST http://localhost:5000/transfers \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6InRlc3R1c2VyIiwiZXhwIjoxNzU3NDMwNDU1fQ.d2nqmcrozIywWm0y7Tt3zSaUep_cR8rNRu1oBf_axDA" \
   -d '{"from_account_id": 1, "to_account_id": 2, "amount": 200.0}'
 echo ""
 echo ""
