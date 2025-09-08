@@ -66,3 +66,17 @@ echo "=== 8. Final Balances ==="
 echo "Account 2 Final:"
 curl -X GET http://localhost:5000/accounts/2 -H "Authorization: Bearer $TOKEN"
 echo ""
+
+
+
+
+
+curl -s -X POST http://127.0.0.1:5000/accounts/1/withdraw \
+     -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6InRlc3R1c2VyIiwiZXhwIjoxNzU3NDA3OTU2fQ.hYEYgRr_6AArQ9Bp4ihbnHnze6tP85kxrgLU69Cqc-0" \
+     -H "Content-Type: application/json" \
+     -d '{"amount": 200}'
+     
+curl -s -X POST http://127.0.0.1:5000/accounts/1/deposit \
+     -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6InRlc3R1c2VyIiwiZXhwIjoxNzU3NDA3OTU2fQ.hYEYgRr_6AArQ9Bp4ihbnHnze6tP85kxrgLU69Cqc-0" \
+     -H "Content-Type: application/json" \
+     -d '{"amount": 200}'
