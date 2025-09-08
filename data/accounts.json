@@ -3,7 +3,14 @@
     "id": 1,
     "user_id": 1,
     "customer_id": "cust_testuser",
-    "balance": 850.0,
-    "created_at": "2025-09-08T11:52:36.264556"
+    "balance": 1500.0,
+    "created_at": "2025-09-08T13:40:10.092298"
+  },
+  {
+    "id": 2,
+    "user_id": 2,
+    "customer_id": "cust_testuse1r",
+    "balance": 700.0,
+    "created_at": "2025-09-08T13:45:41.356285"
   }
 ]
