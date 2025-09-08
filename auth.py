@@ -5,7 +5,7 @@ import datetime
 from functools import wraps
 
 # Secret key for JWT - in production use environment variable
-SECRET_KEY = "your-secret-key-here"
+SECRET_KEY = "secret-key"
 
 def hash_password(password):
     """Hash a password using bcrypt"""

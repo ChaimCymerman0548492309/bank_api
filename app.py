@@ -51,6 +51,7 @@ def register():
         return jsonify({"error": "Invalid initial deposit amount"}), 400
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 @app.route('/login', methods=['POST'])
 def login():
     """Login user"""
@@ -117,6 +118,7 @@ def get_my_accounts():
     """Get all accounts for the authenticated user"""
     accounts = db.get_user_accounts(request.user_id)
     return jsonify(accounts)
+
 @app.route('/accounts', methods=['GET'])
 @token_required
 def get_user_accounts():
@@ -215,6 +217,82 @@ def get_transfer_history(account_id):
 def health_check():
     """Check if system is active"""
     return jsonify({"status": "OK", "message": "Bank API is running"})
+
+@app.route('/accounts/<int:account_id>/deposit', methods=['POST'])
+@token_required
+def deposit(account_id):
+    """Deposit money into an account"""
+    try:
+        data = request.get_json()
+        amount = float(data.get('amount', 0))
+
+        if amount <= 0:
+            return jsonify({"error": "Deposit amount must be positive"}), 400
+
+        # Check account
+        account = db.get_account(account_id)
+        if not account:
+            return jsonify({"error": "Account not found"}), 404
+
+        # Verify user owns the account
+        if account['user_id'] != request.user_id:
+            return jsonify({"error": "Access denied"}), 403
+
+        new_balance = account['balance'] + amount
+        if not db.update_account_balance(account_id, new_balance):
+            return jsonify({"error": "Failed to update account"}), 500
+
+        return jsonify({
+            "message": "Deposit successful",
+            "account_id": account_id,
+            "new_balance": new_balance
+        }), 200
+
+    except ValueError:
+        return jsonify({"error": "Invalid deposit amount"}), 400
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/accounts/<int:account_id>/withdraw', methods=['POST'])
+@token_required
+def withdraw(account_id):
+    """Withdraw money from an account"""
+    try:
+        data = request.get_json()
+        amount = float(data.get('amount', 0))
+
+        if amount <= 0:
+            return jsonify({"error": "Withdrawal amount must be positive"}), 400
+
+        # Check account
+        account = db.get_account(account_id)
+        if not account:
+            return jsonify({"error": "Account not found"}), 404
+
+        # Verify user owns the account
+        if account['user_id'] != request.user_id:
+            return jsonify({"error": "Access denied"}), 403
+
+        if account['balance'] < amount:
+            return jsonify({"error": "Insufficient funds"}), 400
+
+        new_balance = account['balance'] - amount
+        if not db.update_account_balance(account_id, new_balance):
+            return jsonify({"error": "Failed to update account"}), 500
+
+        return jsonify({
+            "message": "Withdrawal successful",
+            "account_id": account_id,
+            "new_balance": new_balance
+        }), 200
+
+    except ValueError:
+        return jsonify({"error": "Invalid withdrawal amount"}), 400
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

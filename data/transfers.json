@@ -1,37 +1,9 @@
 [
   {
     "id": 1,
-    "from_account_id": 2,
+    "from_account_id": 4,
     "to_account_id": 3,
     "amount": 200.0,
-    "timestamp": "2025-09-03T23:07:25.355086"
-  },
-  {
-    "id": 2,
-    "from_account_id": 3,
-    "to_account_id": 2,
-    "amount": 50.0,
-    "timestamp": "2025-09-03T23:07:26.985831"
-  },
-  {
-    "id": 3,
-    "from_account_id": 2,
-    "to_account_id": 3,
-    "amount": 200.0,
-    "timestamp": "2025-09-03T23:10:49.733780"
-  },
-  {
-    "id": 4,
-    "from_account_id": 3,
-    "to_account_id": 2,
-    "amount": 50.0,
-    "timestamp": "2025-09-03T23:10:51.399861"
-  },
-  {
-    "id": 5,
-    "from_account_id": 2,
-    "to_account_id": 2,
-    "amount": 100.0,
-    "timestamp": "2025-09-03T23:10:53.433781"
+    "timestamp": "2025-09-08T11:39:36.578253"
   }
 ]

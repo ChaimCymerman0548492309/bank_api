@@ -1,5 +1,7 @@
 #!/bin/bash
 
+
+
 echo "=== 🏦 Bank API Test - FIXED ==="
 echo "Using Token for user: test (ID: 2)"
 echo "========================================"
